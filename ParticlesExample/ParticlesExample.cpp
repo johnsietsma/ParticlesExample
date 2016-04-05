@@ -112,7 +112,7 @@ int main(int argc, char** argv)
 
         SDL_RenderPresent(pRenderer);
 
-        SDL_Delay(1000/30); // 30 fps
+        SDL_Delay(1000/60); // 60 fps
     }
 
     sdl_destroy();

@@ -13,7 +13,7 @@ class ParticleEmitter
 {
     static constexpr const int ParticleCount = 10000;
     static constexpr const float EmitRate = 5.f;
-    static constexpr const float mEmitTimeStep = 1 / EmitRate;
+    static constexpr const float EmitTimeStep = 1 / EmitRate;
 
 public:
     ParticleEmitter(Vec2 startPos) :
@@ -45,8 +45,8 @@ template<typename TParticle>
 void ParticleEmitter<TParticle>::Update(float deltaTime)
 {
     mEmitTimer += deltaTime;
-    while (mEmitTimer > mEmitTimeStep) {
-        mEmitTimer -= mEmitTimeStep;
+    while (mEmitTimer > EmitTimeStep) {
+        mEmitTimer -= EmitTimeStep;
         Emit();
     }
 
@@ -79,11 +79,14 @@ void ParticleEmitter<TParticle>::Render(SDL_Renderer* pRenderer) const
 template<typename TParticle>
 void ParticleEmitter<TParticle>::Emit()
 {
+    float yVelocity = ((rand() / (float)RAND_MAX) * 10) - 5;
+
     auto& particle = mParticles[mDeadIndex];
-    mDeadIndex = (mDeadIndex + 1) % ParticleCount;
+    mDeadIndex = (mDeadIndex + 1) % ParticleCount; // Wrap around the particle buffer
     particle.position = mStartPos;
-    particle.velocity = { 100,0 };
-    EmitParticle(particle); // Fill in anoy futher particle data.
+    particle.velocity = { 100, yVelocity };
+
+    EmitParticle(particle); // Fill in any futher particle data.
 }
 
 template<typename TParticle>
