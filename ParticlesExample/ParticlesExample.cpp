@@ -1,4 +1,7 @@
 #include "ResourcePath.h"
+
+#include "Particle.h"
+#include "ParticleColored.h"
 #include "ParticleEmitter.h"
 
 #include <iostream>
@@ -79,7 +82,8 @@ int main(int argc, char** argv)
     int ret = sdl_create();
     if (ret != 0) return ret;
 
-    ParticleEmitter emitter;
+    ParticleEmitter<Particle> emitter({ 10, ScreenHeight / 3 });
+    ParticleEmitter<ParticleColored> emitterColored({ 10, ScreenHeight-(ScreenHeight / 3) });
 
     bool shouldRun = true;
     Uint32 lastFrameTime = SDL_GetTicks();
@@ -93,7 +97,8 @@ int main(int argc, char** argv)
         float deltaTime = (nowTime - lastFrameTime) / 1000.f; // in secs
 
         // Update all the particles
-        emitter.Update( deltaTime );
+        emitter.Update(deltaTime);
+        emitterColored.Update( deltaTime );
 
         lastFrameTime = nowTime;
 
@@ -103,6 +108,7 @@ int main(int argc, char** argv)
 
         // Render all the particles
         emitter.Render(pRenderer);
+        emitterColored.Render(pRenderer);
 
         SDL_RenderPresent(pRenderer);
 
