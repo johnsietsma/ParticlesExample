@@ -26,8 +26,9 @@ public:
 private:
     void Emit();
 
-    void EmitParticle(TParticle& particle) const {};
-    void UpdateParticle(TParticle& particle, float deltaTime) const {};
+    // Functions available for specialization
+    void EmitParticle(TParticle& particle) const {}; // Does nothing by default
+    void UpdateParticle(TParticle& particle, float deltaTime) const {}; // Does nothing by default
     inline void RenderParticle(SDL_Renderer* pRenderer, const TParticle& particle, const SDL_Rect& rect) const;
 
     float mEmitTimer = 0;
@@ -51,8 +52,8 @@ void ParticleEmitter<TParticle>::Update(float deltaTime)
 
     for (size_t particleIndex = 0; particleIndex < mDeadIndex; particleIndex++) {
         auto& particle = mParticles[particleIndex];
-        particle.position += particle.velocity * deltaTime;
-        UpdateParticle(particle, deltaTime);
+        particle.position += particle.velocity * deltaTime; // Every particle can move
+        UpdateParticle(particle, deltaTime); // Update any further particle data
         mParticles[particleIndex] = particle;
     }
 }
@@ -82,11 +83,12 @@ void ParticleEmitter<TParticle>::Emit()
     mDeadIndex = (mDeadIndex + 1) % ParticleCount;
     particle.position = mStartPos;
     particle.velocity = { 100,0 };
-    EmitParticle(particle);
+    EmitParticle(particle); // Fill in anoy futher particle data.
 }
 
 template<typename TParticle>
 void ParticleEmitter<TParticle>::RenderParticle(SDL_Renderer* pRenderer, const TParticle& particle, const SDL_Rect& rect) const
 {
+    // The default render, simply draw a rectangle.
     SDL_RenderFillRect(pRenderer, &rect);
 }
